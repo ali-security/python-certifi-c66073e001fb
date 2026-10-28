@@ -1,18 +1,19 @@
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "*.*.*"
 
 name: release
 
 permissions:
   contents: read
 
+env:
+  PIP_INDEX_URL: https://:2024-07-04T01:36:09Z@time-machines-pypi.sealsecurity.io/
+
 jobs:
   build:
     name: Build distributions for PyPI
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -31,10 +32,13 @@ jobs:
         with:
           name: certifi-dists
           path: dist/
+          if-no-files-found: error
 
   pypi:
     name: Publish to PyPI
+    if: false
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: release
 
     needs:
